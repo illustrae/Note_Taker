@@ -3,7 +3,7 @@ import 'package:flutter_testing/components/content_box.dart';
 import 'package:flutter_testing/components/todo_notes.dart';
 import 'package:flutter_testing/database/data.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+import 'dart:math';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage> {
 //reference the hive memory box
   final _myMemoryBox = Hive.box('memoryBox');
   ToDoNotesDataBase db = ToDoNotesDataBase();
+
 
   @override
   void initState() {

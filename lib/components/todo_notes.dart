@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'color_notes.dart';
+
 
 class ToDoNotes extends StatelessWidget {
   final String taskName;
@@ -8,6 +10,7 @@ class ToDoNotes extends StatelessWidget {
   Function(BuildContext)? deleteFunction;
   Function(BuildContext)? moveDownFunction;
   Function(BuildContext)? moveUpFunction;
+
 
   ToDoNotes(
       {super.key,
@@ -24,26 +27,26 @@ class ToDoNotes extends StatelessWidget {
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
       child: Slidable(
         endActionPane: ActionPane(
-          motion: StretchMotion(),
+          extentRatio: 1.0,
+          motion: const StretchMotion(),
           children: [
             SlidableAction(
                 borderRadius: BorderRadius.circular(12),
                 onPressed: deleteFunction,
                 icon: Icons.delete,
-                flex: 1,
                 backgroundColor: Colors.red.shade300),
             SlidableAction(
               borderRadius: BorderRadius.circular(12),
               onPressed: moveDownFunction,
               
-              backgroundColor: Color.fromARGB(255, 233, 179, 1),
+              backgroundColor: const Color.fromARGB(255, 233, 179, 1),
               foregroundColor: Colors.purple[900],
               icon: Icons.arrow_downward),
             SlidableAction(
               borderRadius: BorderRadius.circular(12),
               onPressed: moveUpFunction,
               
-              backgroundColor: Color.fromARGB(255, 0, 199, 50),
+              backgroundColor: const Color.fromARGB(255, 0, 199, 50),
               foregroundColor: Colors.purple[900],
               icon: Icons.arrow_upward,
             )
@@ -52,7 +55,7 @@ class ToDoNotes extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-              color: Colors.purple[900],
+              color: getRandomColor(taskCompleted),
               borderRadius: BorderRadius.circular(12)),
           child: Row(
             children: [
@@ -84,3 +87,4 @@ class ToDoNotes extends StatelessWidget {
     );
   }
 }
+
