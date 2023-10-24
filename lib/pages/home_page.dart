@@ -98,36 +98,65 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white12,
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("TASKIFY"),
-        titleTextStyle: const TextStyle(
-            color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.white12,
+    appBar: AppBar(
+      centerTitle: true,
+      title: const Text("TASKIFY"),
+      titleTextStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: createNewTask,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: createNewTask,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      child: const Icon(Icons.add),
+    ),
+    body: db.toDoList.isEmpty
+        ? ImageBackground() // Display image background when the list is empty
+        : ListView.builder(
+            itemCount: db.toDoList.length,
+            itemBuilder: (context, index) {
+              return ToDoNotes(
+                taskName: db.toDoList[index][0],
+                taskCompleted: db.toDoList[index][1],
+                onChanged: (value) => checkBoxChanged(value, index),
+                deleteFunction: (context) => deleteTask(index),
+                moveDownFunction: (context) => moveTaskDown(index),
+                moveUpFunction: (context) => moveTaskUp(index),
+              );
+            },
+          ),
+  );
+}
+
+Widget ImageBackground() {
+  // Replace this with your image or image widget
+  return Container(
+    decoration: const BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage('assets/images/notesImage.jpg'),
+        fit: BoxFit.cover,
+      ),
+    ),
+    child: const Center(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: EdgeInsets.only(top: 45.0),
+          child: Text(
+            'Uh Oh – Start a task!',
+            style: TextStyle(color: Colors.deepPurple, fontSize: 30, fontWeight: FontWeight.bold),
+          ),
         ),
-        child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-        itemCount: db.toDoList.length,
-        itemBuilder: (context, index) {
-          return ToDoNotes(
-            taskName: db.toDoList[index][0],
-            taskCompleted: db.toDoList[index][1],
-            onChanged: (value) => checkBoxChanged(value, index),
-            deleteFunction: (context) => deleteTask(index),
-            moveDownFunction: (context) => moveTaskDown(index),
-            moveUpFunction: (context) => moveTaskUp(index),
-          );
-        },
-      ),
-    );
-  }
+    ),
+  );
+}
 }

@@ -4,6 +4,7 @@ import 'dart:math';
 Color getRandomColor(bool taskCompleted) {
   final List<Color> randomColors = [
     Colors.deepPurple,
+    Color.fromARGB(255, 52, 155, 206)
   ];
 
   final List<Color> completedColors = [
@@ -18,3 +19,4 @@ Color getRandomColor(bool taskCompleted) {
     return randomColors[random.nextInt(randomColors.length)];
   }
 }
+
