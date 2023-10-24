@@ -9,7 +9,7 @@
 .history
 .svn/
 migrate_working_dir/
-.syntax.xml
+syntax.md
 
 # IntelliJ related
 *.iml
