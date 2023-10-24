@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_testing/components/content_box.dart';
 import 'package:flutter_testing/components/todo_notes.dart';
+import 'package:flutter_testing/database/data.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,7 +12,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List toDoList = [];
+//reference the hive memory box
+  final _myMemoryBox = Hive.box('memoryBox');
+  ToDoNotesDataBase db = ToDoNotesDataBase();
+
+  @override
+  void initState() {
+    if (_myMemoryBox.get("TODOLIST") == null) {
+      db.createInitialDatabase();
+    } else {
+      db.loadData();
+    }
+
+    super.initState();
+  }
 
 //text controller
   final _controller = TextEditingController();
@@ -18,18 +33,20 @@ class _HomePageState extends State<HomePage> {
 //this is the checkbox function
   void checkBoxChanged(bool? value, int index) {
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDatabase();
   }
 
 //save new task
 
   void saveNewTask() {
     setState(() {
-      toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
+    db.updateDatabase();
   }
 
 //new task button and pop up
@@ -49,18 +66,44 @@ class _HomePageState extends State<HomePage> {
 //delete a task
   void deleteTask(int index) {
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
+    db.updateDatabase();
   }
 
+//Move task down the list
+  void moveTaskDown(int index) {
+    if (index < db.toDoList.length - 1) {
+      setState(() {
+        // Swap the current task with the task below it
+        final temp = db.toDoList[index];
+        db.toDoList[index] = db.toDoList[index + 1];
+        db.toDoList[index + 1] = temp;
+      });
+      db.updateDatabase();
+    }
+  }
+
+//Move task up the list
+  void moveTaskUp(int index) {
+    if (index > 0) {
+      setState(() {
+        // Swap the current task with the task below it
+        final temp = db.toDoList[index];
+        db.toDoList[index] = db.toDoList[index - 1];
+        db.toDoList[index - 1] = temp;
+      });
+      db.updateDatabase();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple[700],
+      backgroundColor: Colors.white12,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Goals"),
+        title: const Text("TASKIFY"),
         titleTextStyle: const TextStyle(
             color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600),
       ),
@@ -72,13 +115,15 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
       body: ListView.builder(
-        itemCount: toDoList.length,
+        itemCount: db.toDoList.length,
         itemBuilder: (context, index) {
           return ToDoNotes(
-            taskName: toDoList[index][0],
-            taskCompleted: toDoList[index][1],
+            taskName: db.toDoList[index][0],
+            taskCompleted: db.toDoList[index][1],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
+            moveDownFunction: (context) => moveTaskDown(index),
+            moveUpFunction: (context) => moveTaskUp(index),
           );
         },
       ),

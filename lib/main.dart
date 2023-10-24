@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_testing/pages/home_page.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+  //localstorage dependency
+  await Hive.initFlutter();
+
+  var memoryBox = await Hive.openBox('memoryBox');
+
   runApp(const MyApp());
 }
 
